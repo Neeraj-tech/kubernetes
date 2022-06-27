@@ -18,11 +18,11 @@ sudo apt-get update
 
 sudo apt-get install -y docker.io kubelet kubeadm kubectl
 
-sudo apt-mark hold docker-ce kubelet kubeadm kubectl
+sudo apt-mark hold docker-ce kubelet kubeadm kubectl                          Hold the version
 
-echo "net.bridge.bridge-nf-call-iptables=1" | sudo tee -a /etc/sysctl.conf
+echo "net.bridge.bridge-nf-call-iptables=1" | sudo tee -a /etc/sysctl.conf    add iptables
 
-sudo sysctl -p
+sudo sysctl -p                                                                restarting the process
 
 sudo mkdir /etc/docker
 cat <<EOF | sudo tee /etc/docker/daemon.json
@@ -34,7 +34,7 @@ cat <<EOF | sudo tee /etc/docker/daemon.json
   },
   "storage-driver": "overlay2"
 }
-EOF
+EOF                                                         add some networking instruction on daemon.json
 sudo systemctl enable docker
 sudo systemctl daemon-reload
 sudo systemctl restart docker
