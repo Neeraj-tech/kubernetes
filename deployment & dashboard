@@ -1,0 +1,12 @@
+#On manager machine
+#get deployment.xml from github
+kubectl create -f deployment.yml          
+kubectl get deployments
+kubectl get pods
+kubectl describe deployment nginx-deployment
+kubectl get pods -A
+kubectl get services
+
+#if error can delete
+kubectl delete -f deployment.yml
+kubectl describe pod <pod_name>
