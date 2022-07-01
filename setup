@@ -1,8 +1,10 @@
-sudo hostnamectl set-hostname "manager_machine"
+sudo hostnamectl set-hostname "manager_machine"                             #(optional)execute exit & relogin
 
-sudo hostnamectl set-hostname "worker_machine_one"
+sudo hostnamectl set-hostname "worker_machine_one"                          #(optional)execute exit & relogin
 
-sudo hostnamectl set-hostname "worker_machine_two"
+sudo hostnamectl set-hostname "worker_machine_two"                          #(optional)execute exit & relogin
+
+# Execute in all Three machine
 
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add - 
 
@@ -16,9 +18,9 @@ EOF
 
 sudo apt-get update
 
-sudo apt-get install -y docker.io kubelet kubeadm kubectl
+sudo apt-get install -y docker.io kubelet kubeadm kubectl                     #Install docker.io from web instructions
 
-sudo apt-mark hold docker-ce kubelet kubeadm kubectl                          Hold the version
+sudo apt-mark hold docker-ce kubelet kubeadm kubectl                          Hold the version, as kubernetes is version sensitive
 
 echo "net.bridge.bridge-nf-call-iptables=1" | sudo tee -a /etc/sysctl.conf    add iptables
 
@@ -35,19 +37,28 @@ cat <<EOF | sudo tee /etc/docker/daemon.json
   "storage-driver": "overlay2"
 }
 EOF                                                         add some networking instruction on daemon.json
-sudo systemctl enable docker
+sudo systemctl enable docker                                #if server restart then docker will automatically starts
 sudo systemctl daemon-reload
 sudo systemctl restart docker
 
+#On manager machine run the below code
 sudo kubeadm init --pod-network-cidr=10.244.0.0/16
+
+#Run only if error comes for NumCPU and Mem
+sudo kubeadm init --pod-network-cidr=10.244.0.0/16 --ignore-preflight-errors=NumCPU,Mem
 
 mkdir -p $HOME/.kube
 sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
 sudo chown $(id -u):$(id -g) $HOME/.kube/config
 
-kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
+kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml   # will create network
 
+#Run on worker machine with the above token generated allow 6443 in firewall
 sudo kubeadm join 172.31.4.161:6443 --token 0y52t6.ffsj8jkjfcl1sq8h \
    --discovery-token-ca-cert-hash sha256:7aa1825042d19d3e567f7e4b447634e942fe9ed7f18f78464a9c05f451551ed5
    
 kubectl get nodes
+
+#if error comes [ERROR CRI]: container runtime is not running: output
+rm /etc/containerd/config.toml
+systemctl restart containerd                      
