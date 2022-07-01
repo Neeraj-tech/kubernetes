@@ -1,12 +1,45 @@
 #On manager machine
-#get deployment.xml from github
-kubectl create -f deployment.yml          
-kubectl get deployments
-kubectl get pods
-kubectl describe deployment nginx-deployment
-kubectl get pods -A
+#get deployment.yml from github
+$ kubectl create -f deployment.yml          
+$ kubectl get deployments
+$ kubectl get pods
+$ kubectl describe deployment nginx-deployment
+$ kubectl get pods -A
+$ kubectl get services
+$ kubectl describe pod <pod_name>
+
+#We are using docker to create images & run the containers in kubernetes.
+#
+
+#get dockerfile from github
+nano index.html <h2>This webpage is running on kubernetes cluster and inside a pod.<h2>
+sudo docker build -t kube_image:1.0 .
+sudo docker run -dit -p 80:80 kube_image:1.0
+sudo docker ps
+curl worker machine ip
+# on browser check 
+
+sudo docker images
+docker image tag kube_image:1.0 harodia/kube_image:1.0
+docker image push harodia/kube_image:1.0
+
+#get pod.yml from github
+kubectl create -f pod.yml
+
+#To access pods we need to create services
+#In service.yml targetPort:   will be port in pod.yml for mapping
+#In service.yml selector:     will be label name in pod.yml
+#get service.yml from github
+#Nodeport       means we want to use node ip address.
+
+kubectl create -f service.yml
 kubectl get services
+
+#unlike docker where we give port number here kubectl gives us port number & we need to allow it in firewall.
+#now check workerip:port number 
+
+
 
 #if error can delete
 kubectl delete -f deployment.yml
-kubectl describe pod <pod_name>
+
