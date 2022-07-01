@@ -1,4 +1,5 @@
-sudo hostnamectl set-hostname "manager_machine"                             #(optional)execute exit & relogin
+sudo 
+#(optional)execute exit & relogin
 
 sudo hostnamectl set-hostname "worker_machine_one"                          #(optional)execute exit & relogin
 
@@ -62,6 +63,7 @@ kubectl get nodes
 
 
 #The connection to the server localhost:8080 was refused - did you specify the right host or port?
+#Might have some problem with OS version use Version Ubuntu 20.04
 systemctl stop kubelet
 systemctl start kubelet
 kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml   # will create network
