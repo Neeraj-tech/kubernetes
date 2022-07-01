@@ -1,0 +1,14 @@
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: img-container
+  labels:
+    app: img-container
+spec:
+  containers:
+  - name: img-container
+    image: dgruploads/kube_image:1.0
+    ports:
+    - name: custom-port
+    containerPort: 80
