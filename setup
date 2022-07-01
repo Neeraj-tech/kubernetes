@@ -60,14 +60,19 @@ sudo kubeadm join 172.31.4.161:6443 --token 0y52t6.ffsj8jkjfcl1sq8h \
 # run on manager machine check all nodes
 kubectl get nodes
 
-#The connection to the server localhost:8080 was refused - did you specify the right host or port?
-mkdir -p $HOME/.kube
-sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
-sudo chown $(id -u):$(id -g) $HOME/.kube/config
 
+#The connection to the server localhost:8080 was refused - did you specify the right host or port?
+systemctl stop kubelet
+systemctl start kubelet
 kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml   # will create network
 
 
 #if error comes [ERROR CRI]: container runtime is not running: output
 rm /etc/containerd/config.toml
 systemctl restart containerd                      
+
+
+#The connection to the server localhost:8080 was refused - did you specify the right host or port?
+mkdir -p $HOME/.kube
+sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+sudo chown $(id -u):$(id -g) $HOME/.kube/config
